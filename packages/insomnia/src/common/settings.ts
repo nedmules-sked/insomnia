@@ -175,4 +175,6 @@ export interface Settings {
   disabledBlockedRoots: string[];
   /** Custom npm registry URL for plugin installation (e.g., corporate mirror). Empty string uses the default https://registry.npmjs.org/. */
   npmRegistryUrl: string;
+  /** Behaviour of the next/previous tab keyboard shortcut. 'positional' steps through tabList in order; 'mru' opens an MRU switcher popup. */
+  tabSwitcherMode: 'positional' | 'mru';
 }
