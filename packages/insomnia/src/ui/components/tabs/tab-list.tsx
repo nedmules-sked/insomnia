@@ -20,12 +20,15 @@ import { useInsomniaTab } from '~/ui/hooks/use-insomnia-tab';
 
 import { type ChangeBufferEvent, type ChangeType, database } from '../../../common/database';
 import { debounce } from '../../../common/misc';
+import { useRootLoaderData } from '../../../root';
 import { useInsomniaTabContext } from '../../context/app/insomnia-tab-context';
+import { useRecentRequestsSwitcher } from '../../context/app/recent-requests-switcher-context';
 import { type Size, useResizeObserver } from '../../hooks/use-resize-observer';
 import { Icon } from '../icon';
 import { useDocBodyKeyboardShortcuts } from '../keydown-binder';
 import { AddRequestToCollectionModal } from '../modals/add-request-to-collection-modal';
 import { formatMethodName, getRequestMethodShortHand } from '../tags/method-tag';
+import { RecentRequestsSwitcher } from './recent-requests-switcher';
 import { type BaseTab, InsomniaTab } from './tab';
 
 const { isRequest } = models.request;
@@ -73,6 +76,9 @@ export const OrganizationTabList = ({ showActiveStatus = true, currentPage = '' 
     reopenClosedTab,
   } = useInsomniaTabContext();
 
+  const { settings } = useRootLoaderData()!;
+  const switcher = useRecentRequestsSwitcher();
+
   const { tabList, activeTabId } = currentOrgTabs;
   const issuesByWorkspaceId = gitFileIssues.issuesByWorkspaceId;
 
@@ -80,17 +86,49 @@ export const OrganizationTabList = ({ showActiveStatus = true, currentPage = '' 
   useDocBodyKeyboardShortcuts({
     tab_nextTab: event => {
       event.preventDefault();
-      goToNextTab?.();
+      if (settings.tabSwitcherMode === 'mru') {
+        if (switcher.state.active) {
+          switcher.stepSwitch('next');
+        } else {
+          switcher.beginSwitch('next');
+        }
+      } else {
+        goToNextTab?.();
+      }
     },
     tab_previousTab: event => {
       event.preventDefault();
-      goToPreviousTab?.();
+      if (settings.tabSwitcherMode === 'mru') {
+        if (switcher.state.active) {
+          switcher.stepSwitch('prev');
+        } else {
+          switcher.beginSwitch('prev');
+        }
+      } else {
+        goToPreviousTab?.();
+      }
     },
     tab_reopenClosedTab: event => {
       event.preventDefault();
       reopenClosedTab?.();
     },
   });
+
+  useEffect(() => {
+    if (!switcher.state.active) {
+      return;
+    }
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        switcher.cancel();
+      }
+    };
+    window.addEventListener('keydown', onKeydown, { capture: true });
+    return () => {
+      window.removeEventListener('keydown', onKeydown, { capture: true });
+    };
+  }, [switcher.state.active, switcher.cancel]);
 
   const handleSelectionChange = (keys: Selection) => {
     if (keys !== 'all') {
@@ -372,6 +410,8 @@ export const OrganizationTabList = ({ showActiveStatus = true, currentPage = '' 
   if (!tabList.length) return null;
 
   return (
+    <>
+    <RecentRequestsSwitcher />
     <div className="box-content flex h-(--line-height-sm) bg-(--color-bg)">
       <Button
         onPress={scrollLeft}
@@ -438,5 +478,6 @@ export const OrganizationTabList = ({ showActiveStatus = true, currentPage = '' 
       </div>
       {showAddRequestModal && <AddRequestToCollectionModal onHide={() => setShowAddRequestModal(false)} />}
     </div>
+    </>
   );
 };
