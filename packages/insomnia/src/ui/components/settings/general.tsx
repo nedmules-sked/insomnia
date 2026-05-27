@@ -51,6 +51,16 @@ export const General: FC = () => {
           {!isMac && <BooleanSetting label="Hide menu bar" setting="autoHideMenuBar" />}
           <BooleanSetting label="Raw template syntax" setting="nunjucksPowerUserMode" />
         </div>
+        <div className="form-row">
+          <EnumSetting<'positional' | 'mru'>
+            label="Ctrl+Tab behaviour"
+            setting="tabSwitcherMode"
+            values={[
+              { value: 'mru', name: 'Most recently used (popup switcher)' },
+              { value: 'positional', name: 'Next/previous tab in order' },
+            ]}
+          />
+        </div>
       </div>
 
       <div className="row-fill row-fill--top pad-top-sm">
