@@ -82,5 +82,6 @@ export function init(): BaseSettings {
     disabledBlockedProperties: [],
     disabledBlockedRoots: [],
     npmRegistryUrl: '',
+    tabSwitcherMode: 'mru',
   };
 }
