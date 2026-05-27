@@ -25,6 +25,7 @@ import { PresentUsers } from '~/ui/components/present-users';
 import { OrganizationSelect } from '~/ui/components/project/organization-select';
 import { InsomniaEventStreamProvider } from '~/ui/context/app/insomnia-event-stream-context';
 import { InsomniaTabProvider } from '~/ui/context/app/insomnia-tab-context';
+import { RecentRequestsSwitcherProvider } from '~/ui/context/app/recent-requests-switcher-context';
 import { RunnerProvider } from '~/ui/context/app/runner-context';
 import uiEventBus, { TOGGLE_PROJECT_SIDEBAR } from '~/ui/event-bus';
 import { useCloseConnection } from '~/ui/hooks/use-close-connection';
@@ -215,6 +216,7 @@ const Component = ({ loaderData }: Route.ComponentProps) => {
   return (
     <InsomniaEventStreamProvider>
       <InsomniaTabProvider>
+        <RecentRequestsSwitcherProvider>
         <div className="h-full w-full">
           <div
             className={`grid-template-app-layout relative grid h-full w-full divide-x divide-solid divide-(--hl-md) bg-(--color-bg)`}
@@ -462,6 +464,7 @@ const Component = ({ loaderData }: Route.ComponentProps) => {
             </div>
           </div>
         </div>
+        </RecentRequestsSwitcherProvider>
       </InsomniaTabProvider>
     </InsomniaEventStreamProvider>
   );
