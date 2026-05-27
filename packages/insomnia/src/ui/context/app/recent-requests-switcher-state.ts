@@ -94,6 +94,9 @@ export function reducer(state: SwitcherState, event: SwitcherEvent): SwitcherSta
           : Math.min(state.cursor, snapshot.length - 1);
       return { ...state, snapshot, cursor };
     }
+    default: {
+      return state;
+    }
   }
 }
 
