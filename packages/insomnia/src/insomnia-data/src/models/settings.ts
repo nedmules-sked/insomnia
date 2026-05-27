@@ -84,5 +84,6 @@ export function init(): BaseSettings {
     disabledBlockedRoots: [],
     npmRegistryUrl: '',
     tabSwitcherMode: 'mru',
+    hideProjectScopeFilter: false,
   };
 }

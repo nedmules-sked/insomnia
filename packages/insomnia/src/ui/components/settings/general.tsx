@@ -61,6 +61,13 @@ export const General: FC = () => {
             ]}
           />
         </div>
+        <div>
+          <BooleanSetting
+            label="Hide project scope filter panel"
+            help="Hides the panel listing Documents / Collections / MCP Clients / Mock Servers / Environments on the project dashboard. Filter falls back to showing all when hidden."
+            setting="hideProjectScopeFilter"
+          />
+        </div>
       </div>
 
       <div className="row-fill row-fill--top pad-top-sm">
