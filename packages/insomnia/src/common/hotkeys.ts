@@ -173,12 +173,24 @@ const defaultRegistry: HotKeyRegistry = {
     winLinuxKeys: [{ ctrl: true, keyCode: keyboardKeys.w.keyCode }],
   },
   tab_nextTab: {
-    macKeys: [{ alt: true, meta: true, keyCode: keyboardKeys.rightarrow.keyCode }],
-    winLinuxKeys: [{ ctrl: true, keyCode: keyboardKeys.tab.keyCode }],
+    macKeys: [
+      { alt: true, meta: true, keyCode: keyboardKeys.rightarrow.keyCode },
+      { ctrl: true, keyCode: keyboardKeys.tab.keyCode },
+    ],
+    winLinuxKeys: [
+      { ctrl: true, keyCode: keyboardKeys.tab.keyCode },
+      { ctrl: true, alt: true, keyCode: keyboardKeys.rightarrow.keyCode },
+    ],
   },
   tab_previousTab: {
-    macKeys: [{ alt: true, meta: true, keyCode: keyboardKeys.leftarrow.keyCode }],
-    winLinuxKeys: [{ ctrl: true, shift: true, keyCode: keyboardKeys.tab.keyCode }],
+    macKeys: [
+      { alt: true, meta: true, keyCode: keyboardKeys.leftarrow.keyCode },
+      { ctrl: true, shift: true, keyCode: keyboardKeys.tab.keyCode },
+    ],
+    winLinuxKeys: [
+      { ctrl: true, shift: true, keyCode: keyboardKeys.tab.keyCode },
+      { ctrl: true, alt: true, keyCode: keyboardKeys.leftarrow.keyCode },
+    ],
   },
   tab_reopenClosedTab: {
     macKeys: [{ shift: true, meta: true, keyCode: keyboardKeys.t.keyCode }],
