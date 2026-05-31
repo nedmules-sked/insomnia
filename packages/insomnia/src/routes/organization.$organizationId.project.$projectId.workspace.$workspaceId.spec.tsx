@@ -99,6 +99,21 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     parsedSpec = YAML.parse(apiSpec.contents) as OpenAPIV3.Document;
   } catch {}
 
+  const contents = apiSpec.contents?.trim() ?? '';
+  const hasValidSpec = !!parsedSpec && !!(parsedSpec.openapi || (parsedSpec as { swagger?: string }).swagger);
+  if (contents !== '' && !hasValidSpec) {
+    // The workspace was created from an import or non-OpenAPI source (e.g. a v5 export with a
+    // collection but no spec block). Bounce to the Collection view instead of rendering a broken
+    // SwaggerUI preview.
+    throw redirect(
+      href('/organization/:organizationId/project/:projectId/workspace/:workspaceId/debug', {
+        organizationId,
+        projectId,
+        workspaceId,
+      }),
+    );
+  }
+
   return {
     apiSpec,
     rulesetPath,
