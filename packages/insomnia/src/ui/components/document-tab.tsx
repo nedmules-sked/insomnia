@@ -1,6 +1,8 @@
 import classnames from 'classnames';
 import { NavLink } from 'react-router';
 
+import { useRootLoaderData } from '~/root';
+
 interface Props {
   organizationId: string;
   projectId: string;
@@ -9,6 +11,10 @@ interface Props {
 }
 
 export const DocumentTab = ({ organizationId, projectId, workspaceId, className }: Props) => {
+  const { settings } = useRootLoaderData()!;
+  if (settings.hideWorkspaceModeTabs) {
+    return null;
+  }
   return (
     <nav className={`flex h-[40px] w-full items-center ${className} justify-around px-1`}>
       {[

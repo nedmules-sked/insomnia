@@ -177,6 +177,6 @@ export interface Settings {
   npmRegistryUrl: string;
   /** Behaviour of the next/previous tab keyboard shortcut. 'positional' steps through tabList in order; 'mru' opens an MRU switcher popup. */
   tabSwitcherMode: 'positional' | 'mru';
-  /** If true, hide the scope filter panel (Documents / Collections / MCP Clients / Mock Servers / Environments) on the project dashboard. */
-  hideProjectScopeFilter: boolean;
+  /** If true, hide the Spec / Collection / Tests workspace mode tabs. */
+  hideWorkspaceModeTabs: boolean;
 }

@@ -63,9 +63,9 @@ export const General: FC = () => {
         </div>
         <div>
           <BooleanSetting
-            label="Hide project scope filter panel"
-            help="Hides the panel listing Documents / Collections / MCP Clients / Mock Servers / Environments on the project dashboard. Filter falls back to showing all when hidden."
-            setting="hideProjectScopeFilter"
+            label="Hide workspace mode tabs"
+            help="Hides the Spec / Collection / Tests tabs at the top of design-document workspaces."
+            setting="hideWorkspaceModeTabs"
           />
         </div>
       </div>
