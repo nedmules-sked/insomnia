@@ -595,8 +595,15 @@ export const importResourcesToNewWorkspace = async ({
   const resources = resourceCacheItem.resources;
   const ResourceIdMap = new Map();
   let newWorkspace: Workspace;
-  // support import from both insomnia export and api spec yaml
-  if (resources.find(isApiSpec) || isApiSpecImport(resourceCacheItem.importer)) {
+  // Honour the scope already chosen by the v5 importer when it has resolved one. This lets
+  // `insomnia-v5.ts#resolveWorkspaceScope` downgrade a `spec.insomnia.rest/5.0` file with no
+  // real OpenAPI content to a Collection. Otherwise fall back to the legacy heuristic: any
+  // ApiSpec resource (or an explicit ApiSpec import format) means a Design workspace.
+  const shouldBeDesign =
+    workspaceToImport?.scope === 'design' ||
+    (!workspaceToImport?.scope &&
+      (resources.find(isApiSpec) || isApiSpecImport(resourceCacheItem.importer)));
+  if (shouldBeDesign) {
     newWorkspace = await services.workspace.create({
       name: workspaceToImport?.name,
       scope: 'design',

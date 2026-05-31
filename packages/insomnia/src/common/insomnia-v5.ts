@@ -307,8 +307,53 @@ function getWorkspace(file: InsomniaFile): WithExportType<Workspace> {
     _type: 'workspace',
     name: file.name || 'Imported Collection',
     parentId: '',
-    scope: insomniaSchemaTypeToScope(file.type),
+    scope: resolveWorkspaceScope(file),
   };
+}
+
+// A `spec.insomnia.rest/5.0` file that only carries a `collection:` block (and no real OpenAPI
+// content) is functionally a Collection workspace. The exporter labels these as "spec" because
+// the source workspace was a Design, but if there's no genuine OpenAPI/Swagger document in the
+// spec slot there's no point importing it as a Design — the sidebar can't expand request tree on
+// Design workspaces and the Spec tab has nothing to render. Recognise this case and promote to a
+// Collection on import.
+//
+// We also catch the case where the spec slot contains legacy migration crud
+// (e.g. `spec.contents` holding a v4 `_type: export` blob rather than OpenAPI). That's still
+// effectively no spec for our purposes.
+function resolveWorkspaceScope(file: InsomniaFile): WorkspaceScope {
+  const declared = insomniaSchemaTypeToScope(file.type);
+  if (declared !== 'design') {
+    return declared;
+  }
+  if (!('collection' in file) || !file.collection || file.collection.length === 0) {
+    return declared;
+  }
+  const spec = 'spec' in file ? file.spec : undefined;
+  if (!spec) {
+    return 'collection';
+  }
+  if ('file' in spec && spec.file) {
+    return declared;
+  }
+  if ('contents' in spec && looksLikeOpenApiSpec(spec.contents)) {
+    return declared;
+  }
+  return 'collection';
+}
+
+function looksLikeOpenApiSpec(contents: unknown): boolean {
+  if (contents == null || contents === '') {
+    return false;
+  }
+  if (typeof contents === 'string') {
+    return /(?:^|\n)\s*(?:openapi|swagger|"openapi"|"swagger")\s*:/m.test(contents);
+  }
+  if (typeof contents === 'object' && !Array.isArray(contents)) {
+    const obj = contents as Record<string, unknown>;
+    return typeof obj.openapi === 'string' || typeof obj.swagger === 'string';
+  }
+  return false;
 }
 
 function getEnvironments(file: InsomniaFile): Environment[] {
