@@ -96,6 +96,8 @@ export const RequestPane: FC<Props> = ({ environmentId, settings, onPaste }) => 
   const urlHasQueryParameters = activeRequest.url.includes('?');
   const contentType = getContentTypeFromHeaders(activeRequest.headers) || activeRequest.body.mimeType;
   const isBodyEmpty = Boolean(typeof activeRequest.body.mimeType !== 'string' && !activeRequest.body.text);
+  const methodPrefersBody = ['POST', 'PUT', 'PATCH'].includes(activeRequest.method.toUpperCase());
+  const defaultRequestTab = methodPrefersBody ? 'content-type' : 'params';
   const requestAuth = getAuthObjectOrNull(activeRequest.authentication);
   const isNoneOrInherited = requestAuth?.type === 'none' || requestAuth === null;
 
@@ -113,7 +115,7 @@ export const RequestPane: FC<Props> = ({ environmentId, settings, onPaste }) => 
           />
         </ErrorBoundary>
       </PaneHeader>
-      <Tabs aria-label="Request pane tabs" className="flex h-full w-full flex-1 flex-col">
+      <Tabs key={requestId} defaultSelectedKey={defaultRequestTab} aria-label="Request pane tabs" className="flex h-full w-full flex-1 flex-col">
         <TabList
           className="scrollbar-thin flex h-(--line-height-sm) w-full shrink-0 items-center overflow-x-auto border-b border-solid border-b-(--hl-md) bg-(--color-bg)"
           aria-label="Request pane tabs"
